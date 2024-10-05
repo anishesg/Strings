@@ -36,7 +36,7 @@ char *Str_concat(char pcDest[], const char pcSrc[]) {
     size_t destLength;
     assert((pcDest != NULL) && (pcSrc != NULL));
 
-    /* Initialize after declarations */
+    /* get length */
     destLength = Str_getLength(pcDest);
     pcDestEnd = pcDest + destLength;
 

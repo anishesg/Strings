@@ -1,6 +1,6 @@
 /* stra.c
- * array-based implementation of the str module.
- * author: anish kataria
+ * Array-based implementation of the Str module.
+ * Author: anish kataria
  */
 
 #include <stddef.h>
@@ -9,8 +9,8 @@
 
 size_t Str_getLength(const char pcSrc[]) {
     size_t length = 0;
-    assert((pcSrc) != NULL);
-    /* count the number of characters until null terminator */
+    assert(pcSrc != NULL);
+    /* Count the number of characters until null terminator */
     for (length = 0; pcSrc[length] != '\0'; length++) {
         /* No operation inside the loop */
     }
@@ -19,88 +19,87 @@ size_t Str_getLength(const char pcSrc[]) {
 
 char *Str_copy(char pcDest[], const char pcSrc[]) {
     size_t index = 0;
-    assert((pcDest != NULL) && (pcSrc != NULL));
+    assert(pcDest != NULL && pcSrc != NULL);
     /* Handle empty source string explicitly */
     if (pcSrc[0] == '\0') {
         pcDest[0] = '\0';
         return pcDest;
     }
-    /* copy characters from pcSrc to pcDest */
+    /* Copy characters from pcSrc to pcDest */
     while (pcSrc[index] != '\0') {
         pcDest[index] = pcSrc[index];
         index++;
     }
-    /* add null terminator to the end of pcDest */
+    /* Add null terminator to the end of pcDest */
     pcDest[index] = '\0';
     return pcDest;
 }
 
 char *Str_concat(char pcDest[], const char pcSrc[]) {
-    size_t destLen = 0;
-    size_t srcIndex = 0;
-    assert((pcDest != NULL) && (pcSrc != NULL));
-    /* Handle empty source string explicitly */
-    if (pcSrc[0] == '\0') {
-        return pcDest;
+    size_t destLen;
+    size_t i;
+    assert(pcDest != NULL && pcSrc != NULL);
+    /* Find the length of pcDest */
+    destLen = Str_getLength(pcDest);
+    /* Append pcSrc to pcDest */
+    for (i = 0; pcSrc[i] != '\0'; i++) {
+        pcDest[destLen + i] = pcSrc[i];
     }
-    /* find the length of pcDest to know where to start concatenation */
-    for (destLen = 0; pcDest[destLen] != '\0'; destLen++) {
-        /* No operation inside the loop */
-    }
-    /* append pcSrc to pcDest */
-    while (pcSrc[srcIndex] != '\0') {
-        pcDest[destLen + srcIndex] = pcSrc[srcIndex];
-        srcIndex++;
-    }
-    /* add null terminator at the end */
-    pcDest[destLen + srcIndex] = '\0';
+    /* Add null terminator at the end */
+    pcDest[destLen + i] = '\0';
     return pcDest;
 }
 
 int Str_compare(const char pcStr1[], const char pcStr2[]) {
-    size_t index = 0;
-    int diff;
-    assert((pcStr1 != NULL) && (pcStr2 != NULL));
-    /* compare characters one by one */
-    while (pcStr1[index] != '\0' && pcStr2[index] != '\0') {
-        if (pcStr1[index] != pcStr2[index]) {
-            /* return difference of first unmatched characters */
-            diff = (unsigned char)pcStr1[index] - (unsigned char)pcStr2[index];
-            return diff;
+    size_t i;
+    assert(pcStr1 != NULL && pcStr2 != NULL);
+    /* Compare characters one by one */
+    for (i = 0; pcStr1[i] != '\0' && pcStr2[i] != '\0'; i++) {
+        if (pcStr1[i] != pcStr2[i]) {
+            /* Return -1 if pcStr1 < pcStr2, 1 if pcStr1 > pcStr2 */
+            if ((unsigned char)pcStr1[i] < (unsigned char)pcStr2[i]) {
+                return -1;
+            } else {
+                return 1;
+            }
         }
-        index++;
     }
-    /* strings are equal up to the length of the shorter one */
-    diff = (unsigned char)pcStr1[index] - (unsigned char)pcStr2[index];
-    return diff;
+    /* Strings are equal up to the length of the shorter one */
+    if (pcStr1[i] == pcStr2[i]) {
+        return 0;
+    } else if ((unsigned char)pcStr1[i] < (unsigned char)pcStr2[i]) {
+        return -1;
+    } else {
+        return 1;
+    }
 }
 
 char *Str_search(const char pcHaystack[], const char pcNeedle[]) {
-    size_t hayIndex;
-    size_t needleIndex;
-    assert((pcHaystack != NULL) && (pcNeedle != NULL));
-    /* if needle is empty, return haystack */
+    size_t hayIndex = 0;
+    assert(pcHaystack != NULL && pcNeedle != NULL);
+    /* If needle is empty, return haystack */
     if (pcNeedle[0] == '\0') {
         return (char *)pcHaystack;
     }
-    /* iterate through haystack */
-    for (hayIndex = 0; pcHaystack[hayIndex] != '\0'; hayIndex++) {
-        /* if first character matches, check for full needle */
+    /* Iterate through haystack */
+    while (pcHaystack[hayIndex] != '\0') {
+        /* If first character matches, check for full needle */
         if (pcHaystack[hayIndex] == pcNeedle[0]) {
-            /* check for full needle */
-            for (needleIndex = 0;
-                 pcNeedle[needleIndex] != '\0' &&
-                 pcHaystack[hayIndex + needleIndex] != '\0' &&
-                 pcHaystack[hayIndex + needleIndex] == pcNeedle[needleIndex];
-                 needleIndex++) {
-                /* No operation inside the loop */
+            size_t needleIndex = 0;
+            /* Check for full needle */
+            while (pcNeedle[needleIndex] != '\0') {
+                if (pcHaystack[hayIndex + needleIndex] != pcNeedle[needleIndex]) {
+                    break;
+                }
+                needleIndex++;
             }
-            /* if we reached end of needle, match is found */
+            /* If we reached end of needle, match is found */
             if (pcNeedle[needleIndex] == '\0') {
-                return (char *)&pcHaystack[hayIndex];
+                return (char *)(pcHaystack + hayIndex);
             }
         }
+        hayIndex++;
     }
-    /* needle not found in haystack */
+    /* Needle not found in haystack */
     return NULL;
 }
