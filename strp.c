@@ -8,9 +8,10 @@
 #include "str.h"
 
 size_t Str_getLength(const char pcSrc[]) {
-    const char *pcIter = pcSrc;
+    const char *pcIter;
     assert(pcSrc != NULL);
 
+    pcIter = pcSrc;  // Initialize after declarations
     while (*pcIter) {
         pcIter++;
     }
@@ -18,19 +19,21 @@ size_t Str_getLength(const char pcSrc[]) {
 }
 
 char *Str_copy(char pcDest[], const char pcSrc[]) {
-    char *pcDestIter = pcDest;
+    char *pcDestIter;
     assert((pcDest != NULL) && (pcSrc != NULL));
 
-    while ((*pcDestIter++ = *pcSrc++)) {
-        /* Copy each character from pcSrc to pcDest */
+    pcDestIter = pcDest;  // Initialize after declarations
+    for (; (*pcDestIter = *pcSrc) != '\0'; pcDestIter++, pcSrc++) {
+        /* Copying characters from pcSrc to pcDest */
     }
     return pcDest;
 }
 
 char *Str_concat(char pcDest[], const char pcSrc[]) {
-    char *pcDestEnd = pcDest;
+    char *pcDestEnd;
     assert((pcDest != NULL) && (pcSrc != NULL));
 
+    pcDestEnd = pcDest;  // Initialize after declarations
     /* Move pcDestEnd to the end of pcDest */
     while (*pcDestEnd) {
         pcDestEnd++;
@@ -44,9 +47,12 @@ char *Str_concat(char pcDest[], const char pcSrc[]) {
 }
 
 int Str_compare(const char pcStr1[], const char pcStr2[]) {
-    const char *str1 = pcStr1;
-    const char *str2 = pcStr2;
+    const char *str1;
+    const char *str2;
     assert((pcStr1 != NULL) && (pcStr2 != NULL));
+
+    str1 = pcStr1;  // Initialize after declarations
+    str2 = pcStr2;
 
     while (*str1 && (*str1 == *str2)) {
         str1++;
@@ -56,13 +62,14 @@ int Str_compare(const char pcStr1[], const char pcStr2[]) {
 }
 
 char *Str_search(const char pcHaystack[], const char pcNeedle[]) {
+    const char *hayIter;
     assert((pcHaystack != NULL) && (pcNeedle != NULL));
 
     if (*pcNeedle == '\0') {
         return (char *)pcHaystack;
     }
 
-    const char *hayIter = pcHaystack;
+    hayIter = pcHaystack;  // Initialize after declarations
     while (*hayIter) {
         const char *hayTemp = hayIter;
         const char *needleTemp = pcNeedle;
