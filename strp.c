@@ -11,7 +11,8 @@ size_t Str_getLength(const char pcSrc[]) {
     const char *pcIter;
     assert(pcSrc != NULL);
 
-    pcIter = pcSrc;  // Initialize after declarations
+    /* Initialize after declarations */
+    pcIter = pcSrc;
     while (*pcIter) {
         pcIter++;
     }
@@ -22,7 +23,8 @@ char *Str_copy(char pcDest[], const char pcSrc[]) {
     char *pcDestIter;
     assert((pcDest != NULL) && (pcSrc != NULL));
 
-    pcDestIter = pcDest;  // Initialize after declarations
+    /* Initialize after declarations */
+    pcDestIter = pcDest;
     for (; (*pcDestIter = *pcSrc) != '\0'; pcDestIter++, pcSrc++) {
         /* Copying characters from pcSrc to pcDest */
     }
@@ -33,7 +35,9 @@ char *Str_concat(char pcDest[], const char pcSrc[]) {
     char *pcDestEnd;
     assert((pcDest != NULL) && (pcSrc != NULL));
 
-    pcDestEnd = pcDest;  // Initialize after declarations
+    /* Initialize after declarations */
+    pcDestEnd = pcDest;
+
     /* Move pcDestEnd to the end of pcDest */
     while (*pcDestEnd) {
         pcDestEnd++;
@@ -51,7 +55,8 @@ int Str_compare(const char pcStr1[], const char pcStr2[]) {
     const char *str2;
     assert((pcStr1 != NULL) && (pcStr2 != NULL));
 
-    str1 = pcStr1;  // Initialize after declarations
+    /* Initialize after declarations */
+    str1 = pcStr1;
     str2 = pcStr2;
 
     while (*str1 && (*str1 == *str2)) {
@@ -69,7 +74,8 @@ char *Str_search(const char pcHaystack[], const char pcNeedle[]) {
         return (char *)pcHaystack;
     }
 
-    hayIter = pcHaystack;  // Initialize after declarations
+    /* Initialize after declarations */
+    hayIter = pcHaystack;
     while (*hayIter) {
         const char *hayTemp = hayIter;
         const char *needleTemp = pcNeedle;
