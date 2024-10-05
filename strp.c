@@ -33,15 +33,12 @@ char *Str_copy(char pcDest[], const char pcSrc[]) {
 
 char *Str_concat(char pcDest[], const char pcSrc[]) {
     char *pcDestEnd;
+    size_t destLength;
     assert((pcDest != NULL) && (pcSrc != NULL));
 
     /* Initialize after declarations */
-    pcDestEnd = pcDest;
-
-    /* Move pcDestEnd to the end of pcDest */
-    while (*pcDestEnd) {
-        pcDestEnd++;
-    }
+    destLength = Str_getLength(pcDest);
+    pcDestEnd = pcDest + destLength;
 
     /* Append pcSrc to pcDest */
     while ((*pcDestEnd++ = *pcSrc++)) {
@@ -51,45 +48,49 @@ char *Str_concat(char pcDest[], const char pcSrc[]) {
 }
 
 int Str_compare(const char pcStr1[], const char pcStr2[]) {
-    const char *str1;
-    const char *str2;
     assert((pcStr1 != NULL) && (pcStr2 != NULL));
 
-    /* Initialize after declarations */
-    str1 = pcStr1;
-    str2 = pcStr2;
-
-    while (*str1 && (*str1 == *str2)) {
-        str1++;
-        str2++;
+    while (*pcStr1 && (*pcStr1 == *pcStr2)) {
+        pcStr1++;
+        pcStr2++;
     }
-    return (int)((unsigned char)*str1 - (unsigned char)*str2);
+    if (*pcStr1 == *pcStr2) {
+        return 0;
+    } else if ((unsigned char)*pcStr1 < (unsigned char)*pcStr2) {
+        return -1;
+    } else {
+        return 1;
+    }
 }
 
 char *Str_search(const char pcHaystack[], const char pcNeedle[]) {
     const char *hayIter;
     assert((pcHaystack != NULL) && (pcNeedle != NULL));
 
+    /* Handle edge case: empty needle */
     if (*pcNeedle == '\0') {
         return (char *)pcHaystack;
     }
 
     /* Initialize after declarations */
-    hayIter = pcHaystack;
-    while (*hayIter) {
-        const char *hayTemp = hayIter;
-        const char *needleTemp = pcNeedle;
+    for (hayIter = pcHaystack; *hayIter != '\0'; hayIter++) {
+        /* Check if the first character matches */
+        if (*hayIter == *pcNeedle) {
+            const char *h = hayIter;
+            const char *n = pcNeedle;
 
-        while (*hayTemp && *needleTemp && (*hayTemp == *needleTemp)) {
-            hayTemp++;
-            needleTemp++;
+            /* Start comparing from current position */
+            for (; *n != '\0' && *h != '\0' && *h == *n; h++, n++) {
+                /* No operation inside the loop */
+            }
+
+            /* If we reached the end of needle, match is found */
+            if (*n == '\0') {
+                return (char *)hayIter;
+            }
         }
-
-        if (*needleTemp == '\0') {
-            return (char *)hayIter;
-        }
-
-        hayIter++;
     }
+
+    /* Needle not found */
     return NULL;
 }
