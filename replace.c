@@ -19,14 +19,15 @@
 static size_t replaceAndWrite(const char *pcLine,
                               const char *pcFrom, const char *pcTo)
 {
+    /* Variable declarations at the beginning of the block */
+    size_t replacementCounter = 0;
+    const char *currentPosition = pcLine;
+    const char *foundPosition;
+
     /* Ensure that the input pointers are valid */
     assert(pcLine != NULL);
     assert(pcFrom != NULL);
     assert(pcTo != NULL);
-
-    size_t replacementCounter = 0;
-    const char *currentPosition = pcLine;
-    const char *foundPosition;
 
     /* Check if the 'from' string is empty */
     if (Str_getLength(pcFrom) == 0) {
@@ -70,7 +71,7 @@ static size_t replaceAndWrite(const char *pcLine,
    how many replacements were made, and return 0.
    Assume that no line of stdin consists of more than MAX_LINE_SIZE-1
    characters. */
-   
+
 int main(int argc, char *argv[])
 {
     enum { MAX_LINE_SIZE = 4096 };
