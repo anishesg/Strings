@@ -1,59 +1,119 @@
 /* strp.c
- * Pointer-based implementation of the Str module.
- * Author: anish kataria
+ * pointer-based implementation of the str module.
+ * author: anish kataria
  */
 
 #include <stddef.h>
 #include <assert.h>
 #include "str.h"
 
+/* 
+ * function: str_getlength
+ * -----------------------
+ * calculates the number of characters in the given string
+ *
+ * pcsrc: the string whose length is to be determined
+ *
+ * returns: the length of the string as a size_t value
+ */
 size_t Str_getLength(const char pcSrc[]) {
-    const char *pcIter;
+    const char *currentChar;
+    size_t length = 0;
+
     assert(pcSrc != NULL);
 
-    /* Initialize after declarations */
-    pcIter = pcSrc;
-    while (*pcIter) {
-        pcIter++;
+    /* initialize pointer to the start of the string */
+    currentChar = pcSrc;
+
+    /* iterate through the string until the null terminator is reached */
+    while (*currentChar) {
+        length++;
+        currentChar++;
     }
-    return (size_t)(pcIter - pcSrc);
+
+    return length;
 }
 
+/* 
+ * function: str_copy
+ * -------------------
+ * copies the source string into the destination array
+ *
+ * pcdest: the array where the string will be copied
+ * pcsrc:  the string to be copied
+ *
+ * returns: a pointer to the destination string pcdest
+ */
 char *Str_copy(char pcDest[], const char pcSrc[]) {
-    char *pcDestIter;
-    assert((pcDest != NULL) && (pcSrc != NULL));
+    char *destPointer;
+    size_t index = 0;
 
-    /* Initialize after declarations */
-    pcDestIter = pcDest;
-    for (; (*pcDestIter = *pcSrc) != '\0'; pcDestIter++, pcSrc++) {
-        /* Copying characters from pcSrc to pcDest */
+    assert(pcDest != NULL && pcSrc != NULL);
+
+    /* initialize pointer to the start of the destination array */
+    destPointer = pcDest;
+
+    /* copy characters from pcSrc to pcDest until the null terminator is encountered */
+    while ((*(destPointer + index) = *(pcSrc + index)) != '\0') {
+        index++;
     }
+
     return pcDest;
 }
 
+/* 
+ * function: str_concat
+ * ---------------------
+ * appends the source string to the end of the destination string
+ *
+ * pcdest: the array where the source string will be concatenated
+ * pcsrc:  the string to append to the destination
+ *
+ * returns: a pointer to the concatenated destination string pcdest
+ */
 char *Str_concat(char pcDest[], const char pcSrc[]) {
-    char *pcDestEnd;
-    size_t destLength;
-    assert((pcDest != NULL) && (pcSrc != NULL));
+    char *destinationEnd;
+    size_t destinationLength;
 
-    /* get length */
-    destLength = Str_getLength(pcDest);
-    pcDestEnd = pcDest + destLength;
+    assert(pcDest != NULL && pcSrc != NULL);
 
-    /* Append pcSrc to pcDest */
-    while ((*pcDestEnd++ = *pcSrc++)) {
-        /* Copy each character from pcSrc to the end of pcDest */
+    /* get the length of the destination string */
+    destinationLength = Str_getLength(pcDest);
+
+    /* set the pointer to the end of the destination string */
+    destinationEnd = pcDest + destinationLength;
+
+    /* append characters from pcSrc to pcDest */
+    while ((*destinationEnd++ = *pcSrc++)) {
+        /* copying characters */
     }
+
     return pcDest;
 }
 
+/* 
+ * function: str_compare
+ * ----------------------
+ * compares two strings to determine their lexicographical order
+ *
+ * pcstr1: the first string to compare
+ * pcstr2: the second string to compare
+ *
+ * returns: 
+ *   -1 if pcStr1 is less than pcStr2,
+ *    0 if pcStr1 is equal to pcStr2,
+ *    1 if pcStr1 is greater than pcStr2
+ */
 int Str_compare(const char pcStr1[], const char pcStr2[]) {
-    assert((pcStr1 != NULL) && (pcStr2 != NULL));
+    assert(pcStr1 != NULL && pcStr2 != NULL);
 
+    /* iterate through both strings character by character */
     while (*pcStr1 && (*pcStr1 == *pcStr2)) {
         pcStr1++;
         pcStr2++;
     }
+
+    /* determine the result based on the comparison */
     if (*pcStr1 == *pcStr2) {
         return 0;
     } else if ((unsigned char)*pcStr1 < (unsigned char)*pcStr2) {
@@ -63,34 +123,51 @@ int Str_compare(const char pcStr1[], const char pcStr2[]) {
     }
 }
 
+/* 
+ * function: str_search
+ * ---------------------
+ * searches for the first occurrence of the needle string within the haystack string
+ *
+ * pchydstack: the string to be searched within
+ * pcneedle:   the string to search for
+ *
+ * returns:
+ *   a pointer to the first occurrence of pcNeedle in pcHaystack,
+ *   or NULL if the needle is not found
+ */
 char *Str_search(const char pcHaystack[], const char pcNeedle[]) {
-    const char *hayIter;
-    assert((pcHaystack != NULL) && (pcNeedle != NULL));
+    const char *haystackPointer;
+    const char *needlePointer;
 
-    /* Handle edge case: empty needle */
+    assert(pcHaystack != NULL && pcNeedle != NULL);
+
+    /* handle edge case where the needle is an empty string */
     if (*pcNeedle == '\0') {
         return (char *)pcHaystack;
     }
 
-    /* Initialize after declarations */
-    for (hayIter = pcHaystack; *hayIter != '\0'; hayIter++) {
-        /* Check if the first character matches */
-        if (*hayIter == *pcNeedle) {
-            const char *h = hayIter;
-            const char *n = pcNeedle;
+    /* iterate through each character in the haystack */
+    for (haystackPointer = pcHaystack; *haystackPointer != '\0'; haystackPointer++) {
+        /* check if the current character matches the first character of the needle */
+        if (*haystackPointer == *pcNeedle) {
+            needlePointer = pcNeedle;
 
-            /* Start comparing from current position */
-            for (; *n != '\0' && *h != '\0' && *h == *n; h++, n++) {
-                /* No operation inside the loop */
+            /* start comparing subsequent characters */
+            while (*needlePointer != '\0' && *haystackPointer == *needlePointer) {
+                haystackPointer++;
+                needlePointer++;
             }
 
-            /* If we reached the end of needle, match is found */
-            if (*n == '\0') {
-                return (char *)hayIter;
+            /* if the end of the needle is reached, a match is found */
+            if (*needlePointer == '\0') {
+                return (char *)(haystackPointer - (needlePointer - pcNeedle));
             }
+
+            /* reset haystackPointer to the position after the initial match */
+            haystackPointer -= (needlePointer - pcNeedle) - 1;
         }
     }
 
-    /* Needle not found */
+    /* if no match is found, return NULL */
     return NULL;
 }
