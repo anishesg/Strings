@@ -74,4 +74,4 @@ int Str_compare(const char pcStr1[], const char pcStr2[]);
  */
 char *Str_search(const char pcHaystack[], const char pcNeedle[]);
 
-#endif /* STR_H */ss
+#endif /* STR_H */
