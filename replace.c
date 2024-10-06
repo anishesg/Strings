@@ -24,9 +24,12 @@ static size_t replaceAndWrite(const char *pcLine,
     assert(pcFrom != NULL);
     assert(pcTo != NULL);
     
+    /* Declare all variables at the beginning */
     const char *currentPtr = pcLine;
     size_t replacementCount = 0;
     size_t fromLength = Str_getLength(pcFrom);
+    char *found;
+    size_t prefixLength;
     
     /* Handle empty pcFrom string */
     if (fromLength == 0) {
@@ -36,11 +39,11 @@ static size_t replaceAndWrite(const char *pcLine,
     
     while (*currentPtr != '\0') {
         /* Search for the next occurrence of pcFrom in pcLine */
-        char *found = Str_search(currentPtr, pcFrom);
+        found = Str_search(currentPtr, pcFrom);
         
         if (found != NULL) {
             /* Calculate the number of characters before the found substring */
-            size_t prefixLength = (size_t)(found - currentPtr);
+            prefixLength = (size_t)(found - currentPtr);
             
             /* Print the prefix part that does not include pcFrom */
             if (prefixLength > 0) {
@@ -81,29 +84,28 @@ static size_t replaceAndWrite(const char *pcLine,
  */
 int main(int argc, char *argv[])
 {
-    enum {MAX_LINE_SIZE = 4096};
-    enum {PROPER_ARG_COUNT = 3};
+   enum {MAX_LINE_SIZE = 4096};
+   enum {PROPER_ARG_COUNT = 3};
 
-    char acLine[MAX_LINE_SIZE];
-    char *pcFrom;
-    char *pcTo;
-    size_t uReplaceCount = 0;
+   char acLine[MAX_LINE_SIZE];
+   char *pcFrom;
+   char *pcTo;
+   size_t uReplaceCount = 0;
 
-    if (argc != PROPER_ARG_COUNT)
-    {
-        fprintf(stderr, "usage: %s fromstring tostring\n", argv[0]);
-        return EXIT_FAILURE;
-    }
+   if (argc != PROPER_ARG_COUNT)
+   {
+      fprintf(stderr, "usage: %s fromstring tostring\n", argv[0]);
+      return EXIT_FAILURE;
+   }
 
-    pcFrom = argv[1];
-    pcTo = argv[2];
+   pcFrom = argv[1];
+   pcTo = argv[2];
 
     while (fgets(acLine, MAX_LINE_SIZE, stdin) != NULL) {
         uReplaceCount += replaceAndWrite(acLine, pcFrom, pcTo);
     }
 
-    fprintf(stderr, "%lu replacements\n", (unsigned long)uReplaceCount);
-    return EXIT_SUCCESS;
+   fprintf(stderr, "%lu replacements\n", (unsigned long)uReplaceCount);
+   return 0;
 }
-
 /*--------------------------------------------------------------------*/
